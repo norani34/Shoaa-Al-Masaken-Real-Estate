@@ -35,7 +35,7 @@
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
-    <script type="module" crossorigin src="/Shoaa-Al-Masaken-Real-Estate/assets/index-BRqjhuYK.js"></script>
+    <script type="module" crossorigin src="/Shoaa-Al-Masaken-Real-Estate/assets/index-CngVuJdf.js"></script>
     <link rel="modulepreload" crossorigin href="/Shoaa-Al-Masaken-Real-Estate/assets/react-vendor-BMAKeFhu.js">
     <link rel="modulepreload" crossorigin href="/Shoaa-Al-Masaken-Real-Estate/assets/motion-vendor-DjTyfNu_.js">
     <link rel="modulepreload" crossorigin href="/Shoaa-Al-Masaken-Real-Estate/assets/ui-vendor-C7KrS8tj.js">
@@ -43,6 +43,25 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- Reload-once fallback: if the app didn't start (caching issue), reload once with cache-busting -->
+    <script>
+      (function(){
+        try{
+          var started = !!(window.__appStarted);
+          if(!started){
+            var reloaded = sessionStorage.getItem('app_reloaded');
+            if(!reloaded){
+              sessionStorage.setItem('app_reloaded','1');
+              var href = location.href;
+              var sep = href.indexOf('?')===-1 ? '?' : '&';
+              location.replace(href + sep + '_cb=' + Date.now());
+            }
+          } else {
+            sessionStorage.removeItem('app_reloaded');
+          }
+        }catch(e){}
+      })();
+    </script>
   </body>
 </html>
 
