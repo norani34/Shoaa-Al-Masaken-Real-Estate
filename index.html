@@ -49,25 +49,27 @@
     <div id="root"></div>
     <!-- Reload-once fallback: if the app didn't start (caching issue), reload once with cache-busting -->
     <script>
-      (function(){
-        try{
-          // Wait briefly to allow module scripts to load and set the startup flag.
-          setTimeout(function(){
-            var started = !!(window.__appStarted);
-            if(!started){
-              var reloaded = sessionStorage.getItem('app_reloaded');
-              if(!reloaded){
-                sessionStorage.setItem('app_reloaded','1');
-                var href = location.href;
-                var sep = href.indexOf('?')===-1 ? '?' : '&';
-                location.replace(href + sep + '_cb=' + Date.now());
-              }
-            } else {
-              sessionStorage.removeItem('app_reloaded');
-            }
-          }, 1500);
-        }catch(e){}
-      })();
+        (function(){
+          try{
+            // Fetch the server version file (no-store) and compare to embedded marker.
+            // If different, force a network reload so cached index.html doesn't block loading.
+            var EMBEDDED_VERSION = '1776746247891';
+            setTimeout(function(){
+              fetch((location.origin + (import.meta ? (import.meta.env && import.meta.env.BASE_URL) : '/') + 'version.json'), {cache: 'no-store'})
+                .then(function(r){ if(!r.ok) throw new Error('no-version'); return r.json(); })
+                .then(function(js){
+                  var serverVersion = js && js.version ? String(js.version) : null;
+                  if(serverVersion && serverVersion !== EMBEDDED_VERSION){
+                    var reloaded = sessionStorage.getItem('app_reloaded');
+                    if(!reloaded){ sessionStorage.setItem('app_reloaded','1'); var href = location.href; var sep = href.indexOf('?')===-1 ? '?' : '&'; location.replace(href + sep + '_cb=' + Date.now()); }
+                  } else {
+                    sessionStorage.removeItem('app_reloaded');
+                  }
+                })
+                .catch(function(){ /* ignore */ });
+            }, 1200);
+          }catch(e){}
+        })();
     </script>
   </body>
 </html>
